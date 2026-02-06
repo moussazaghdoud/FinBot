@@ -19,7 +19,21 @@ router.get('/', async (req, res) => {
     try {
         const { theme, horizon, limit = 10 } = req.query;
 
-        let filtered = [...insightsStore];
+        // Merge manual insights with auto-generated from worker
+        let workerInsights = [];
+        try {
+            const workerState = require('../workers/ingestion').getState();
+            workerInsights = workerState.insights || [];
+        } catch (e) { /* worker not loaded yet */ }
+
+        const allInsights = [...insightsStore, ...workerInsights];
+        // Deduplicate by id
+        const seen = new Set();
+        let filtered = allInsights.filter(i => {
+            if (seen.has(i.id)) return false;
+            seen.add(i.id);
+            return true;
+        });
 
         if (theme) {
             filtered = filtered.filter(i => i.theme === theme);
@@ -38,7 +52,7 @@ router.get('/', async (req, res) => {
         res.json({
             success: true,
             data: filtered,
-            total: insightsStore.length,
+            total: filtered.length,
             lastGenerated: lastGeneratedAt,
             aiEnabled: insightEngine.isEnabled()
         });

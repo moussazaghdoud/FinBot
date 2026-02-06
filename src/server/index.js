@@ -172,6 +172,27 @@ function broadcast(type, data) {
 // Export broadcast for use in workers
 module.exports = { broadcast };
 
+// ==================== AUTO INGESTION ====================
+
+const { runIngestionCycle, getState } = require('./workers/ingestion');
+const INGESTION_INTERVAL = (parseInt(process.env.REFRESH_INTERVAL_MINUTES) || 15) * 60 * 1000;
+
+// Expose worker state to insight/event routes so they share data
+app.use((req, res, next) => {
+    req.workerState = getState;
+    next();
+});
+
+// Patch insights route to read from worker state
+app.get('/api/insights/auto', (req, res) => {
+    const state = getState();
+    res.json({
+        success: true,
+        data: state.insights,
+        total: state.insights.length
+    });
+});
+
 // Error handling
 app.use((err, req, res, next) => {
     logger.error('Unhandled error:', err);
@@ -185,4 +206,26 @@ server.listen(PORT, () => {
     logger.info(`FinBot server running on http://localhost:${PORT}`);
     logger.info(`WebSocket available at ws://localhost:${PORT}/ws`);
     logger.info(`OpenAI API: ${process.env.OPENAI_API_KEY ? 'Enabled' : 'Disabled'}`);
+
+    // Start auto ingestion after server is up
+    logger.info(`Starting auto-ingestion (every ${INGESTION_INTERVAL / 60000} min)`);
+    runIngestionCycle().then(() => {
+        const state = getState();
+        if (state.insights.length > 0) {
+            broadcast('new_insight', state.insights[0]);
+        }
+        if (state.marketData) {
+            broadcast('market_update', state.marketData);
+        }
+    });
+    setInterval(async () => {
+        await runIngestionCycle();
+        const state = getState();
+        if (state.insights.length > 0) {
+            broadcast('new_insight', state.insights[0]);
+        }
+        if (state.marketData) {
+            broadcast('market_update', state.marketData);
+        }
+    }, INGESTION_INTERVAL);
 });
