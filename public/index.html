@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinBot - Investment Readiness Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 class="logo">FinBot</h1>
+                <span class="tagline">Investment Readiness Dashboard</span>
+            </div>
+            <div class="header-right">
+                <div class="status-indicator" id="status-indicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting...</span>
+                </div>
+                <div class="last-update" id="last-update">--</div>
+                <button class="btn-refresh" id="btn-refresh" title="Refresh Data">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs">
+            <button class="tab active" data-tab="overview">Overview</button>
+            <button class="tab" data-tab="trade-ideas">Trade Ideas</button>
+            <button class="tab" data-tab="markets">Markets</button>
+            <button class="tab" data-tab="events">Events</button>
+            <button class="tab" data-tab="insights">Insights</button>
+            <button class="tab" data-tab="alerts">
+                Alerts
+                <span class="badge" id="alert-badge" style="display:none">0</span>
+            </button>
+        </nav>
+
+        <!-- Disclaimer Banner -->
+        <div class="disclaimer-banner">
+            <strong>Disclaimer:</strong> This dashboard provides market analysis for informational purposes only.
+            It is NOT financial advice. Always consult a qualified financial advisor before making investment decisions.
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview Tab -->
+            <section class="tab-content active" id="tab-overview">
+                <!-- Market Summary Cards -->
+                <div class="summary-grid">
+                    <div class="summary-card sentiment-card" id="sentiment-card">
+                        <h3>Market Sentiment</h3>
+                        <div class="sentiment-value" id="sentiment-value">--</div>
+                        <p class="sentiment-rationale" id="sentiment-rationale">Loading...</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Key Indices</h3>
+                        <div class="mini-quotes" id="indices-quotes"></div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Risk Indicators</h3>
+                        <div class="risk-indicators" id="risk-indicators"></div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Data Freshness</h3>
+                        <div class="freshness-meter" id="freshness-meter">
+                            <div class="freshness-bar"></div>
+                        </div>
+                        <p class="freshness-note" id="freshness-note">--</p>
+                    </div>
+                </div>
+
+                <!-- Market Trend Sparklines -->
+                <div class="section">
+                    <h2 class="section-title">Market Trends (3 Months)</h2>
+                    <div class="overview-charts-grid">
+                        <div class="chart-card-sm">
+                            <div class="chart-card-header">
+                                <span class="chart-card-title">S&P 500 (SPY)</span>
+                                <span class="chart-card-change" id="spark-change-SPY">--</span>
+                            </div>
+                            <canvas id="spark-SPY" height="80"></canvas>
+                        </div>
+                        <div class="chart-card-sm">
+                            <div class="chart-card-header">
+                                <span class="chart-card-title">Bitcoin (BTC)</span>
+                                <span class="chart-card-change" id="spark-change-BTC">--</span>
+                            </div>
+                            <canvas id="spark-BTC" height="80"></canvas>
+                        </div>
+                        <div class="chart-card-sm">
+                            <div class="chart-card-header">
+                                <span class="chart-card-title">Gold (GOLD)</span>
+                                <span class="chart-card-change" id="spark-change-GOLD">--</span>
+                            </div>
+                            <canvas id="spark-GOLD" height="80"></canvas>
+                        </div>
+                        <div class="chart-card-sm">
+                            <div class="chart-card-header">
+                                <span class="chart-card-title">Volatility (VIX)</span>
+                                <span class="chart-card-change" id="spark-change-VIX">--</span>
+                            </div>
+                            <canvas id="spark-VIX" height="80"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Insights -->
+                <div class="section">
+                    <h2 class="section-title">Latest Insights</h2>
+                    <div class="insights-list" id="top-insights">
+                        <p class="loading">Loading insights...</p>
+                    </div>
+                </div>
+
+                <!-- Recent Events -->
+                <div class="section">
+                    <h2 class="section-title">Recent Events</h2>
+                    <div class="events-list" id="recent-events">
+                        <p class="loading">Loading events...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Trade Ideas Tab -->
+            <section class="tab-content" id="tab-trade-ideas">
+                <div class="disclaimer-box">
+                    <h3>IMPORTANT DISCLAIMER</h3>
+                    <p>All trade ideas are for <strong>EDUCATIONAL PURPOSES ONLY</strong>. This is NOT financial advice.</p>
+                    <ul>
+                        <li>NO GUARANTEES - Markets are unpredictable</li>
+                        <li>You could lose some or ALL of your investment</li>
+                        <li>Past performance does NOT indicate future results</li>
+                        <li>Always do your own research (DYOR)</li>
+                        <li>Consult a licensed financial advisor before investing</li>
+                    </ul>
+                    <label class="disclaimer-accept">
+                        <input type="checkbox" id="accept-disclaimer">
+                        I understand this is educational content only, not financial advice
+                    </label>
+                </div>
+
+                <div id="trade-ideas-content" style="display:none">
+                    <div class="trade-ideas-controls">
+                        <button class="btn-primary btn-large" id="btn-generate-ideas">
+                            Generate Trade Ideas (AI)
+                        </button>
+                        <button class="btn-secondary" id="btn-weekly-outlook">
+                            Weekly Outlook
+                        </button>
+                    </div>
+
+                    <div class="trade-ideas-list" id="trade-ideas-list">
+                        <p class="empty">Click "Generate Trade Ideas" to get AI-powered educational trade analysis</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Markets Tab -->
+            <section class="tab-content" id="tab-markets">
+                <!-- Price Evolution Charts -->
+                <div class="section">
+                    <div class="charts-controls">
+                        <h2 class="section-title" style="margin-bottom:0">Price Evolution</h2>
+                        <div class="chart-view-toggle">
+                            <button class="chart-view-btn active" data-view="category">By Category</button>
+                            <button class="chart-view-btn" data-view="compare">Compare Assets</button>
+                        </div>
+                    </div>
+
+                    <!-- Category View -->
+                    <div id="category-view" class="active">
+                        <div class="charts-grid">
+                            <div class="chart-card">
+                                <div class="chart-card-title">Indices</div>
+                                <canvas id="chart-indices"></canvas>
+                            </div>
+                            <div class="chart-card">
+                                <div class="chart-card-title">Crypto</div>
+                                <canvas id="chart-crypto"></canvas>
+                            </div>
+                            <div class="chart-card">
+                                <div class="chart-card-title">Commodities</div>
+                                <canvas id="chart-commodities"></canvas>
+                            </div>
+                            <div class="chart-card">
+                                <div class="chart-card-title">Forex</div>
+                                <canvas id="chart-forex"></canvas>
+                            </div>
+                            <div class="chart-card" style="grid-column: span 2">
+                                <div class="chart-card-title">Rates</div>
+                                <canvas id="chart-rates"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Compare View -->
+                    <div id="compare-view">
+                        <div class="compare-controls" id="compare-controls">
+                            <!-- Checkboxes populated by JS -->
+                            <select id="compare-mode">
+                                <option value="percent">% Change</option>
+                                <option value="absolute">Absolute</option>
+                            </select>
+                        </div>
+                        <div class="chart-card-lg">
+                            <canvas id="chart-compare"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market Cards -->
+                <div class="section">
+                    <h2 class="section-title">Market Data</h2>
+                    <div class="markets-grid" id="markets-grid">
+                        <p class="loading">Loading market data...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Events Tab -->
+            <section class="tab-content" id="tab-events">
+                <div class="events-controls">
+                    <select id="event-category-filter">
+                        <option value="">All Categories</option>
+                        <option value="geopolitics">Geopolitics</option>
+                        <option value="macro">Macro</option>
+                        <option value="rates">Interest Rates</option>
+                        <option value="crypto">Crypto</option>
+                        <option value="commodities">Commodities</option>
+                        <option value="markets">Markets</option>
+                    </select>
+                    <button class="btn-primary" id="btn-generate-cards">Generate Event Cards</button>
+                </div>
+                <div class="events-full-list" id="events-full-list">
+                    <p class="loading">Loading events...</p>
+                </div>
+            </section>
+
+            <!-- Insights Tab -->
+            <section class="tab-content" id="tab-insights">
+                <div class="insights-controls">
+                    <select id="insight-theme-filter">
+                        <option value="">All Themes</option>
+                    </select>
+                    <select id="insight-horizon-filter">
+                        <option value="">All Horizons</option>
+                        <option value="short">Short (1 week)</option>
+                        <option value="medium">Medium (1 month)</option>
+                        <option value="long">Long (3+ months)</option>
+                    </select>
+                    <button class="btn-primary" id="btn-generate-insight">Generate New Insight</button>
+                </div>
+                <div class="insights-full-list" id="insights-full-list">
+                    <p class="loading">Loading insights...</p>
+                </div>
+            </section>
+
+            <!-- Alerts Tab -->
+            <section class="tab-content" id="tab-alerts">
+                <div class="alerts-controls">
+                    <label>
+                        <input type="checkbox" id="show-unread-only"> Show unread only
+                    </label>
+                    <button class="btn-secondary" id="btn-mark-all-read">Mark All Read</button>
+                </div>
+                <div class="alerts-list" id="alerts-list">
+                    <p class="empty">No alerts yet</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Insight Detail Modal -->
+        <div class="modal" id="insight-modal" style="display:none">
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <button class="modal-close" id="modal-close">&times;</button>
+                <div class="modal-body" id="insight-modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

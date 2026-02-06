@@ -1,0 +1,219 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Data sources (RSS feeds, APIs, etc.)
+model Source {
+  id              String   @id @default(cuid())
+  name            String
+  url             String   @unique
+  type            String   // rss, api, scraper
+  category        String   // geopolitics, macro, earnings, crypto, commodities
+  credibilityScore Int     @default(70) // 0-100
+  isActive        Boolean  @default(true)
+  lastFetchedAt   DateTime?
+  fetchIntervalMin Int     @default(15)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  items           Item[]
+}
+
+// Raw ingested items
+model Item {
+  id            String   @id @default(cuid())
+  sourceId      String
+  source        Source   @relation(fields: [sourceId], references: [id])
+
+  title         String
+  url           String   @unique
+  publishedAt   DateTime
+  fetchedAt     DateTime @default(now())
+  rawText       String?
+  summary       String?
+
+  // Classification (stored as JSON strings for SQLite)
+  topics        String   @default("[]") // JSON array: ["geopolitics", "macro", ...]
+  entities      String   @default("{}") // JSON: { countries: [], companies: [], tickers: [], commodities: [] }
+  sentiment     String?  // positive, negative, neutral
+  impactScore   Int      @default(50) // 0-100 estimated impact
+
+  // Deduplication
+  contentHash   String
+
+  // Clustering
+  clusterId     String?
+  cluster       Cluster? @relation(fields: [clusterId], references: [id])
+
+  createdAt     DateTime @default(now())
+
+  @@index([publishedAt])
+  @@index([contentHash])
+}
+
+// Clustered similar stories (same event from multiple sources)
+model Cluster {
+  id            String   @id @default(cuid())
+
+  // Aggregated data
+  mainTitle     String
+  topics        String   @default("[]") // JSON array
+  entities      String   @default("{}") // JSON
+  itemCount     Int      @default(1)
+
+  // Source agreement
+  sourceAgreement Float  @default(1.0) // 0-1, how much sources agree
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  items         Item[]
+  eventCard     EventCard?
+}
+
+// Processed event cards
+model EventCard {
+  id              String   @id @default(cuid())
+  clusterId       String   @unique
+  cluster         Cluster  @relation(fields: [clusterId], references: [id])
+
+  title           String
+  summary         String
+  whyItMatters    String
+
+  // Impact assessment (stored as JSON strings for SQLite)
+  impactedRegions String   @default("[]") // JSON array
+  impactedSectors String   @default("[]") // JSON array
+  impactedAssets  String   @default("{}") // JSON: { equities: [], crypto: [], forex: [], commodities: [], rates: [] }
+
+  // Confidence & freshness
+  confidence      Int      // 0-100
+  freshnessScore  Float    // 0-1, decays over time
+
+  // Sources for audit (stored as JSON strings for SQLite)
+  sourceUrls      String   @default("[]") // JSON array
+  sourceNames     String   @default("[]") // JSON array
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  insights        InsightEvidence[]
+}
+
+// Market data snapshots
+model MarketSnapshot {
+  id          String   @id @default(cuid())
+  timestamp   DateTime @default(now())
+
+  data        String   @default("{}") // JSON: Full market data
+
+  // Key metrics extracted for quick access
+  spyPrice    Float?
+  vixLevel    Float?
+  dxyLevel    Float?   // USD index
+  btcPrice    Float?
+  goldPrice   Float?
+  tenYrYield  Float?
+
+  @@index([timestamp])
+}
+
+// Generated insights
+model Insight {
+  id              String   @id @default(cuid())
+
+  // Core content
+  title           String
+  theme           String   // e.g., "energy_shock", "rate_cuts", "china_demand"
+  thesis          String   @default("[]") // JSON array: 2-4 bullet points
+
+  // Evidence with citations
+  evidence        InsightEvidence[]
+
+  // Counter-arguments (required!)
+  counterArguments String  @default("[]") // JSON array
+  whatWouldChangeMyMind String @default("")
+
+  // Scenarios
+  scenarioBase    String   @default("")
+  scenarioBull    String   @default("")
+  scenarioBear    String   @default("")
+
+  // Confidence & risk
+  confidence      Int      // 0-100
+  confidenceFactors String @default("{}") // JSON: { increases: [], decreases: [] }
+  riskLevel       String   // low, medium, high
+
+  // Time horizon
+  horizon         String   // short (1w), medium (1m), long (3m+)
+
+  // Asset class implications (NOT recommendations)
+  implications    String   @default("{}") // JSON: { equities: {}, crypto: {}, forex: {}, commodities: {}, rates: {} }
+
+  // Audit trail
+  modelUsed       String
+  promptVersion   String
+  rawResponse     String?
+
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([theme])
+  @@index([createdAt])
+}
+
+// Links insights to their supporting event cards
+model InsightEvidence {
+  id          String    @id @default(cuid())
+  insightId   String
+  insight     Insight   @relation(fields: [insightId], references: [id])
+  eventCardId String
+  eventCard   EventCard @relation(fields: [eventCardId], references: [id])
+
+  relevance   Float     // 0-1 how relevant this evidence is
+
+  @@unique([insightId, eventCardId])
+}
+
+// User settings and watchlists
+model UserSettings {
+  id              String   @id @default(cuid())
+
+  refreshMinutes  Int      @default(15)
+  watchlist       String   @default("[]") // JSON array
+  alertRules      String   @default("[]") // JSON array
+
+  // UI preferences
+  defaultView     String   @default("overview")
+  defaultFilters  String   @default("{}")
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Alert log
+model Alert {
+  id          String   @id @default(cuid())
+
+  type        String   // high_impact, volatility_spike, source_disagreement
+  title       String
+  message     String
+  severity    String   // info, warning, critical
+
+  // Related data
+  relatedInsightId String?
+  relatedEventCardId String?
+  sourceUrls  String   @default("[]") // JSON array
+
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([isRead])
+}
