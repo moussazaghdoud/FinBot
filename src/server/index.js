@@ -94,6 +94,41 @@ app.get('/api/status', async (req, res) => {
     }
 });
 
+// OpenAI diagnostic endpoint
+app.get('/api/debug/openai', async (req, res) => {
+    const keyExists = !!process.env.OPENAI_API_KEY;
+    const keyPrefix = process.env.OPENAI_API_KEY
+        ? process.env.OPENAI_API_KEY.substring(0, 7) + '...'
+        : 'NOT SET';
+
+    if (!keyExists) {
+        return res.json({ status: 'error', key: keyPrefix, message: 'OPENAI_API_KEY not set' });
+    }
+
+    try {
+        const { OpenAI } = require('openai');
+        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+        const completion = await openai.chat.completions.create({
+            model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+            messages: [{ role: 'user', content: 'Reply with exactly: OK' }],
+            max_tokens: 5
+        });
+        res.json({
+            status: 'ok',
+            key: keyPrefix,
+            model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+            response: completion.choices[0].message.content
+        });
+    } catch (error) {
+        res.json({
+            status: 'error',
+            key: keyPrefix,
+            model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+            error: error.message
+        });
+    }
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, '../../public')));
 
