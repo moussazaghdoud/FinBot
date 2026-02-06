@@ -52,80 +52,112 @@
         <main class="main-content">
             <!-- Overview Tab -->
             <section class="tab-content active" id="tab-overview">
-                <!-- Market Summary Cards -->
-                <div class="summary-grid">
-                    <div class="summary-card sentiment-card" id="sentiment-card">
-                        <h3>Market Sentiment</h3>
-                        <div class="sentiment-value" id="sentiment-value">--</div>
-                        <p class="sentiment-rationale" id="sentiment-rationale">Loading...</p>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Key Indices</h3>
-                        <div class="mini-quotes" id="indices-quotes"></div>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Risk Indicators</h3>
-                        <div class="risk-indicators" id="risk-indicators"></div>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Data Freshness</h3>
-                        <div class="freshness-meter" id="freshness-meter">
-                            <div class="freshness-bar"></div>
-                        </div>
-                        <p class="freshness-note" id="freshness-note">--</p>
-                    </div>
+                <!-- Educational Disclaimer -->
+                <div class="insight-edu-banner">
+                    For educational purposes only — not financial advice. Always do your own research.
                 </div>
 
-                <!-- Market Trend Sparklines -->
+                <!-- Investment Insights (HERO) -->
                 <div class="section">
-                    <h2 class="section-title">Market Trends (3 Months)</h2>
-                    <div class="overview-charts-grid">
-                        <div class="chart-card-sm">
-                            <div class="chart-card-header">
-                                <span class="chart-card-title">S&P 500 (SPY)</span>
-                                <span class="chart-card-change" id="spark-change-SPY">--</span>
-                            </div>
-                            <canvas id="spark-SPY" height="80"></canvas>
+                    <div class="insights-hero-header">
+                        <h2 class="section-title">Investment Insights</h2>
+                        <div class="insights-hero-meta">
+                            <span class="insights-auto-badge" id="insights-auto-status">Auto-refreshing</span>
+                            <span class="insights-timestamp" id="insights-timestamp">--</span>
                         </div>
-                        <div class="chart-card-sm">
-                            <div class="chart-card-header">
-                                <span class="chart-card-title">Bitcoin (BTC)</span>
-                                <span class="chart-card-change" id="spark-change-BTC">--</span>
-                            </div>
-                            <canvas id="spark-BTC" height="80"></canvas>
-                        </div>
-                        <div class="chart-card-sm">
-                            <div class="chart-card-header">
-                                <span class="chart-card-title">Gold (GOLD)</span>
-                                <span class="chart-card-change" id="spark-change-GOLD">--</span>
-                            </div>
-                            <canvas id="spark-GOLD" height="80"></canvas>
-                        </div>
-                        <div class="chart-card-sm">
-                            <div class="chart-card-header">
-                                <span class="chart-card-title">Volatility (VIX)</span>
-                                <span class="chart-card-change" id="spark-change-VIX">--</span>
-                            </div>
-                            <canvas id="spark-VIX" height="80"></canvas>
+                    </div>
+                    <div class="insights-hero-list" id="top-insights">
+                        <div class="insight-hero-loading">
+                            <div class="insight-loading-spinner"></div>
+                            <p>Generating investment insights with AI...</p>
+                            <p class="insight-loading-sub">Analyzing markets, news & macro data</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Top Insights -->
+                <!-- Market Snapshot Bar -->
                 <div class="section">
-                    <h2 class="section-title">Latest Insights</h2>
-                    <div class="insights-list" id="top-insights">
-                        <p class="loading">Loading insights...</p>
+                    <div class="market-snapshot-bar">
+                        <div class="snapshot-item" id="sentiment-card">
+                            <span class="snapshot-label">Sentiment</span>
+                            <span class="sentiment-value" id="sentiment-value">--</span>
+                        </div>
+                        <div class="snapshot-item">
+                            <span class="snapshot-label">Volatility</span>
+                            <span class="snapshot-val" id="snapshot-volatility">--</span>
+                        </div>
+                        <div class="snapshot-item">
+                            <span class="snapshot-label">USD</span>
+                            <span class="snapshot-val" id="snapshot-usd">--</span>
+                        </div>
+                        <div class="snapshot-item">
+                            <span class="snapshot-label">Yields</span>
+                            <span class="snapshot-val" id="snapshot-yields">--</span>
+                        </div>
+                        <div class="snapshot-item">
+                            <span class="snapshot-label">Freshness</span>
+                            <div class="freshness-meter" id="freshness-meter">
+                                <div class="freshness-bar"></div>
+                            </div>
+                            <span class="freshness-note" id="freshness-note">--</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Recent Events -->
+                <!-- Sparklines + Key Quotes side by side -->
+                <div class="section">
+                    <div class="overview-bottom-grid">
+                        <!-- Sparklines -->
+                        <div class="overview-charts-grid">
+                            <div class="chart-card-sm">
+                                <div class="chart-card-header">
+                                    <span class="chart-card-title">S&P 500</span>
+                                    <span class="chart-card-change" id="spark-change-SPY">--</span>
+                                </div>
+                                <canvas id="spark-SPY" height="80"></canvas>
+                            </div>
+                            <div class="chart-card-sm">
+                                <div class="chart-card-header">
+                                    <span class="chart-card-title">Bitcoin</span>
+                                    <span class="chart-card-change" id="spark-change-BTC">--</span>
+                                </div>
+                                <canvas id="spark-BTC" height="80"></canvas>
+                            </div>
+                            <div class="chart-card-sm">
+                                <div class="chart-card-header">
+                                    <span class="chart-card-title">Gold</span>
+                                    <span class="chart-card-change" id="spark-change-GOLD">--</span>
+                                </div>
+                                <canvas id="spark-GOLD" height="80"></canvas>
+                            </div>
+                            <div class="chart-card-sm">
+                                <div class="chart-card-header">
+                                    <span class="chart-card-title">VIX</span>
+                                    <span class="chart-card-change" id="spark-change-VIX">--</span>
+                                </div>
+                                <canvas id="spark-VIX" height="80"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Key Quotes -->
+                        <div class="summary-card">
+                            <h3>Key Quotes</h3>
+                            <div class="mini-quotes" id="indices-quotes"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Events (compact) -->
                 <div class="section">
                     <h2 class="section-title">Recent Events</h2>
                     <div class="events-list" id="recent-events">
                         <p class="loading">Loading events...</p>
                     </div>
                 </div>
+
+                <!-- Hidden elements needed by existing JS -->
+                <div id="risk-indicators" style="display:none"></div>
+                <div id="sentiment-rationale" style="display:none"></div>
             </section>
 
             <!-- Trade Ideas Tab -->

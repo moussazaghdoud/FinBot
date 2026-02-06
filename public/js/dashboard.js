@@ -280,7 +280,15 @@ function renderOverview() {
         `;
     }).join('');
 
-    // Risk Indicators
+    // Snapshot bar
+    const volEl = document.getElementById('snapshot-volatility');
+    const usdEl = document.getElementById('snapshot-usd');
+    const yieldsEl = document.getElementById('snapshot-yields');
+    if (volEl) volEl.textContent = summary.volatilityLevel || '--';
+    if (usdEl) usdEl.textContent = summary.dollarStrength || '--';
+    if (yieldsEl) yieldsEl.textContent = summary.yieldEnvironment?.replace('_', ' ') || '--';
+
+    // Risk Indicators (hidden, kept for compatibility)
     elements.riskIndicators.innerHTML = `
         <div class="risk-item">
             <span class="risk-label">Volatility</span>
@@ -356,12 +364,66 @@ function renderMarkets() {
 }
 
 function renderInsights() {
-    // Top insights for overview
-    const topInsightsHtml = insights.slice(0, 3).map(renderInsightCard).join('');
-    elements.topInsights.innerHTML = topInsightsHtml || '<p class="empty">No insights generated yet. Click "Generate New Insight" to create one.</p>';
+    // Hero insights for overview homepage
+    const topInsights = insights.slice(0, 5);
+    if (topInsights.length > 0) {
+        elements.topInsights.innerHTML = topInsights.map(renderInsightHeroCard).join('');
+        // Update timestamp
+        const tsEl = document.getElementById('insights-timestamp');
+        if (tsEl && topInsights[0]._meta?.generatedAt) {
+            tsEl.textContent = `Last updated: ${formatTime(topInsights[0]._meta.generatedAt)}`;
+        }
+    } else {
+        elements.topInsights.innerHTML = `
+            <div class="insight-hero-loading">
+                <div class="insight-loading-spinner"></div>
+                <p>Generating investment insights with AI...</p>
+                <p class="insight-loading-sub">Analyzing markets, news & macro data</p>
+            </div>`;
+    }
 
     // Full insights list
     filterInsights();
+}
+
+function renderInsightHeroCard(insight) {
+    const confidenceClass = insight.confidence >= 70 ? 'high' : insight.confidence >= 40 ? 'medium' : 'low';
+
+    const thesisHtml = (insight.thesis || []).map(t =>
+        `<div class="insight-hero-thesis-item">
+            <span class="insight-hero-thesis-bullet">&#9654;</span>
+            <span>${t}</span>
+        </div>`
+    ).join('');
+
+    const implHtml = Object.entries(insight.potentialImplications || {}).map(([asset, data]) =>
+        `<div class="insight-hero-impl-item">
+            <span class="insight-hero-impl-asset">${asset}</span>
+            <span class="insight-hero-impl-dir ${data.direction}">${data.direction?.replace(/_/g, ' ') || '--'}</span>
+            <span style="color:var(--text-muted);font-size:0.75rem">${data.rationale?.substring(0, 80) || ''}</span>
+        </div>`
+    ).join('');
+
+    return `
+        <div class="insight-hero-card">
+            <div class="insight-hero-card-header" onclick="showInsightDetail('${insight.id}')">
+                <div class="insight-hero-title">${insight.title}</div>
+                <span class="insight-theme">${insight.theme?.replace(/_/g, ' ')}</span>
+            </div>
+            <div class="insight-hero-card-body">
+                <div class="insight-hero-thesis">${thesisHtml}</div>
+                <div class="insight-hero-implications">${implHtml}</div>
+            </div>
+            <div class="insight-hero-footer">
+                <div class="insight-hero-footer-left">
+                    <span class="confidence-badge ${confidenceClass}">Confidence: ${insight.confidence}%</span>
+                    <span>Risk: ${insight.riskLevel || '--'}</span>
+                    <span>Horizon: ${insight.horizon || '--'}</span>
+                </div>
+                <span>${formatTime(insight._meta?.generatedAt)}</span>
+            </div>
+        </div>
+    `;
 }
 
 function renderInsightCard(insight) {

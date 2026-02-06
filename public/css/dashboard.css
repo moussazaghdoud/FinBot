@@ -938,6 +938,230 @@ select {
 .level-value.resistance { color: var(--accent-red); }
 .level-value.pivot { color: var(--accent-yellow); }
 
+/* ==================== INSIGHTS HERO (Homepage) ==================== */
+
+.insight-edu-banner {
+    background: rgba(59, 130, 246, 0.1);
+    border-left: 4px solid var(--accent-blue);
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.insights-hero-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.insights-hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.insights-auto-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 1rem;
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--accent-green);
+    font-weight: 500;
+}
+
+.insights-timestamp {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.insights-hero-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Loading state */
+.insight-hero-loading {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-secondary);
+}
+
+.insight-loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--bg-tertiary);
+    border-top-color: var(--accent-blue);
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    animation: spin 1s linear infinite;
+}
+
+.insight-loading-sub {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+/* Hero insight card (expanded) */
+.insight-hero-card {
+    background: var(--bg-secondary);
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+
+.insight-hero-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.insight-hero-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1.25rem 1.25rem 0.75rem;
+    cursor: pointer;
+}
+
+.insight-hero-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.insight-hero-card-body {
+    padding: 0 1.25rem 1.25rem;
+}
+
+.insight-hero-thesis {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.insight-hero-thesis-item {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.insight-hero-thesis-bullet {
+    color: var(--accent-blue);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.insight-hero-implications {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.insight-hero-impl-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-tertiary);
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+}
+
+.insight-hero-impl-asset {
+    font-weight: 600;
+    min-width: 80px;
+}
+
+.insight-hero-impl-dir {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 1rem;
+    font-weight: 500;
+}
+
+.insight-hero-impl-dir.potentially_positive { background: rgba(34, 197, 94, 0.2); color: var(--accent-green); }
+.insight-hero-impl-dir.potentially_negative { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+.insight-hero-impl-dir.neutral, .insight-hero-impl-dir.uncertain { background: rgba(100, 116, 139, 0.2); color: var(--text-secondary); }
+
+.insight-hero-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    background: var(--bg-tertiary);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.insight-hero-footer-left {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Market Snapshot Bar */
+.market-snapshot-bar {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--bg-secondary);
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+.snapshot-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 80px;
+}
+
+.snapshot-label {
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.snapshot-val {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.snapshot-item .sentiment-value {
+    font-size: 0.875rem;
+}
+
+.snapshot-item .freshness-meter {
+    width: 80px;
+    height: 4px;
+}
+
+.snapshot-item .freshness-note {
+    font-size: 0.6875rem;
+    margin-top: 0;
+}
+
+/* Overview bottom grid */
+.overview-bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 1rem;
+    align-items: start;
+}
+
 /* ==================== CHARTS ==================== */
 
 /* Overview sparkline grid */
@@ -1143,6 +1367,23 @@ select {
 
     .trade-idea-grid {
         grid-template-columns: 1fr;
+    }
+
+    .overview-bottom-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .market-snapshot-bar {
+        gap: 1rem;
+    }
+
+    .insight-hero-implications {
+        grid-template-columns: 1fr;
+    }
+
+    .insights-hero-header {
+        flex-direction: column;
+        gap: 0.5rem;
     }
 
     .overview-charts-grid {
