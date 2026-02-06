@@ -8,7 +8,7 @@
     "server": "nodemon src/server/index.js",
     "client": "next dev src/client -p 3001",
     "worker": "node src/server/workers/ingestion.js",
-    "build": "next build src/client",
+    "build": "prisma generate",
     "start": "node src/server/index.js",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
