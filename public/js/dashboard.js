@@ -463,10 +463,9 @@ function renderEventCard(event) {
                 <div class="event-title">${event.title}</div>
                 <span class="event-category">${event.category}</span>
             </div>
-            <div class="event-summary">${event.rawText?.substring(0, 200) || ''}...</div>
+            <div class="event-summary">${event.rawText?.substring(0, 150) || ''}...</div>
             <div class="event-sources">
-                Source: ${event.sourceName} (Credibility: ${event.credibility}/100) •
-                ${formatTime(event.publishedAt)}
+                ${event.sourceName} &middot; ${event.credibility}/100 &middot; ${formatTime(event.publishedAt)}
             </div>
         </div>
     `;
@@ -1062,23 +1061,23 @@ function getChartDefaults() {
                 }
             },
             tooltip: {
-                backgroundColor: '#1e293b',
-                titleColor: '#f1f5f9',
-                bodyColor: '#94a3b8',
-                borderColor: '#334155',
+                backgroundColor: '#1c1c2e',
+                titleColor: '#e8e8f0',
+                bodyColor: '#a0a0b8',
+                borderColor: '#2a2a44',
                 borderWidth: 1,
-                padding: 10,
+                padding: 8,
                 displayColors: true
             }
         },
         scales: {
             x: {
-                ticks: { color: '#64748b', maxTicksLimit: 8, font: { size: 10 } },
-                grid: { color: 'rgba(51,65,85,0.3)' }
+                ticks: { color: '#6c6c88', maxTicksLimit: 8, font: { size: 10 } },
+                grid: { color: 'rgba(42,42,68,0.4)' }
             },
             y: {
-                ticks: { color: '#64748b', font: { size: 10 } },
-                grid: { color: 'rgba(51,65,85,0.3)' }
+                ticks: { color: '#6c6c88', font: { size: 10 } },
+                grid: { color: 'rgba(42,42,68,0.4)' }
             }
         }
     };
@@ -1162,10 +1161,10 @@ function renderSparkline(symbol) {
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    backgroundColor: '#1e293b',
-                    titleColor: '#f1f5f9',
-                    bodyColor: '#94a3b8',
-                    borderColor: '#334155',
+                    backgroundColor: '#1c1c2e',
+                    titleColor: '#e8e8f0',
+                    bodyColor: '#a0a0b8',
+                    borderColor: '#2a2a44',
                     borderWidth: 1,
                     callbacks: {
                         label: ctx => `${formatPrice(ctx.parsed.y, symbol)}`
