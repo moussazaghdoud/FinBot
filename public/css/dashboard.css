@@ -126,42 +126,49 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* ==================== TABS ==================== */
+/* ==================== TABS — Pill Style ==================== */
 .tabs {
     display: flex;
-    gap: 0;
-    padding: 0 1.25rem;
+    gap: 0.4rem;
+    padding: 0.5rem 1.25rem;
     background: var(--bg-secondary);
     border-bottom: 1px solid var(--border-color);
+    align-items: center;
 }
 
 .tab {
-    padding: 0.6rem 1rem;
+    padding: 0.4rem 1rem;
     background: transparent;
-    border: none;
+    border: 1px solid transparent;
     color: var(--text-muted);
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 500;
-    border-bottom: 2px solid transparent;
+    border-radius: 2rem;
     transition: all 0.2s;
     position: relative;
 }
 
-.tab:hover { color: var(--text-secondary); }
+.tab:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+}
 
 .tab.active {
-    color: var(--accent-teal);
-    border-bottom-color: var(--accent-teal);
+    color: white;
+    background: var(--accent-teal);
+    border-color: var(--accent-teal);
 }
 
 .tab .badge {
     background: var(--accent-red);
     color: white;
-    font-size: 0.65rem;
-    padding: 0.1rem 0.4rem;
+    font-size: 0.6rem;
+    padding: 0.05rem 0.35rem;
     border-radius: 1rem;
-    margin-left: 0.35rem;
+    margin-left: 0.3rem;
+    vertical-align: middle;
 }
 
 /* ==================== DISCLAIMER ==================== */
@@ -334,37 +341,38 @@ body {
 }
 
 .insight-hero-implications {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 0.35rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
     margin-bottom: 0.5rem;
 }
 
 .insight-hero-impl-item {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0.3rem 0.5rem;
+    gap: 0.3rem;
+    padding: 0.2rem 0.5rem;
     background: var(--bg-tertiary);
-    border-radius: 0.25rem;
-    font-size: 0.72rem;
+    border-radius: 2rem;
+    font-size: 0.7rem;
+    border: 1px solid var(--border-color);
 }
 
 .insight-hero-impl-asset {
     font-weight: 600;
-    min-width: 55px;
+    color: var(--text-primary);
 }
 
 .insight-hero-impl-dir {
-    font-size: 0.65rem;
-    padding: 0.1rem 0.35rem;
+    font-size: 0.6rem;
+    padding: 0.05rem 0.3rem;
     border-radius: 0.75rem;
-    font-weight: 500;
+    font-weight: 600;
 }
 
-.insight-hero-impl-dir.potentially_positive { background: rgba(46, 204, 113, 0.2); color: var(--accent-green); }
-.insight-hero-impl-dir.potentially_negative { background: rgba(231, 76, 60, 0.2); color: var(--accent-red); }
-.insight-hero-impl-dir.neutral, .insight-hero-impl-dir.uncertain { background: rgba(108, 108, 136, 0.2); color: var(--text-secondary); }
+.insight-hero-impl-dir.potentially_positive { background: rgba(46, 204, 113, 0.15); color: var(--accent-green); }
+.insight-hero-impl-dir.potentially_negative { background: rgba(231, 76, 60, 0.15); color: var(--accent-red); }
+.insight-hero-impl-dir.neutral, .insight-hero-impl-dir.uncertain { background: rgba(108, 108, 136, 0.15); color: var(--text-muted); }
 
 .insight-hero-footer {
     display: flex;
@@ -660,11 +668,13 @@ body {
 .insight-theme {
     font-size: 0.6rem;
     padding: 0.1rem 0.5rem;
-    border-radius: 0.75rem;
-    background: var(--accent-purple);
-    color: white;
+    border-radius: 0.2rem;
+    background: rgba(155, 89, 182, 0.15);
+    color: var(--accent-purple);
     text-transform: capitalize;
     white-space: nowrap;
+    font-weight: 600;
+    border: 1px solid rgba(155, 89, 182, 0.3);
 }
 
 .insight-thesis {
